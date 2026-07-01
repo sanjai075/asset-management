@@ -1,0 +1,108 @@
+extends ../layout
+
+block content
+  .row.mb-4
+    .col-12
+      h2.mb-3 Stock View (Available Assets Only)
+
+  //- Metrics Overview
+  .row.g-3.mb-4
+    .col-md-6
+      .card.bg-primary.text-white
+        .card-body.d-flex.align-items-center.justify-content-between.p-4
+          div
+            h6.card-subtitle.mb-2.text-white-50 Total Available Assets
+            h2.card-title.fw-bold.mb-0= availableAssets.length
+          span.fs-1
+            i.fa-solid.fa-warehouse
+
+    .col-md-6
+      .card.bg-success.text-white
+        .card-body.d-flex.align-items-center.justify-content-between.p-4
+          div
+            h6.card-subtitle.mb-2.text-white-50 Total Stock Value
+            h2.card-title.fw-bold.mb-0= `₹${totalAssetValue.toFixed(2)}`
+          span.fs-1
+            i.fa-solid.fa-indian-rupee-sign
+
+  .row.g-4
+    //- Branch-wise Totals Table
+    .col-lg-4
+      .card.h-100
+        .card-header.bg-transparent
+          h5.mb-0
+            i.fa-solid.fa-building.me-2.text-primary
+            | Branch-wise Totals
+        .card-body.p-0
+          if branchTotals.length > 0
+            .table-responsive
+              table.table.table-striped.table-hover.align-middle.mb-0
+                thead.table-light
+                  tr
+                    th Branch
+                    th.text-center Qty
+                    th.text-end Value
+                tbody
+                  each branch in branchTotals
+                    tr
+                      td.fw-semibold= branch.branchName
+                      td.text-center= branch.count
+                      td.text-end.fw-medium= `₹${branch.totalValue.toFixed(2)}`
+          else
+            .p-4.text-center.text-muted
+              i.fa-solid.fa-circle-info.mb-2.fs-3
+              p.mb-0 No stock records available.
+
+    //- Detailed Available Assets List
+    .col-lg-8
+      .card.h-100
+        .card-header.bg-transparent
+          h5.mb-0
+            i.fa-solid.fa-list-check.me-2.text-success
+            | Available Assets Detail
+        .card-body
+          form(method="GET", action="/stock", class="row g-2 mb-4")
+            .col-md-6
+              .input-group
+                span.input-group-text
+                  i.fa-solid.fa-magnifying-glass
+                input.form-control(
+                  type="text"
+                  name="search"
+                  placeholder="Search by Make or Model..."
+                  value=search
+                )
+            .col-md-3
+              button.btn.btn-primary.w-100(type="submit") Search
+            .col-md-3
+              a.btn.btn-secondary.w-100(href="/stock") Reset
+
+          .table-responsive
+            table#stockDetailsTable.table.table-striped.table-hover.align-middle
+              thead
+                tr
+                  th Asset Code
+                  th Category
+                  th Make/Model
+                  th Branch
+                  th.text-end Value
+              tbody
+                each asset in availableAssets
+                  tr
+                    td.fw-semibold= asset.assetCode
+                    td= asset.category ? asset.category.name : "N/A"
+                    td= `${asset.make} ${asset.model}`
+                    td= asset.branch
+                    td.text-end= `₹${parseFloat(asset.value).toFixed(2)}`
+
+block scripts
+  script.
+    $(document).ready(function() {
+      $('#stockDetailsTable').DataTable({
+        searching: false,
+        pageLength: 10,
+        lengthChange: false,
+        ordering: true,
+        order: [[0, 'asc']]
+      });
+    });

@@ -1,0 +1,58 @@
+extends ../layout
+
+block content
+  .row.justify-content-center
+    .col-md-8
+      .card
+        .card-header
+          h4.mb-0
+            i.fa-solid.fa-trash-can.me-2.text-danger
+            | Scrap Asset (Decommission)
+        .card-body
+          .alert.alert-danger
+            i.fa-solid.fa-circle-exclamation.me-2
+            strong Warning:
+            | Scrapping an asset is permanent. Scrapped assets will be immediately excluded from the Active Asset listings and Stock View metrics.
+
+          if assets.length === 0
+            .alert.alert-warning.mb-0
+              i.fa-solid.fa-triangle-exclamation.me-2
+              | No assets available to scrap.
+          else
+            form.needs-validation(method="POST", action="/transactions/scrap", novalidate=true)
+              .mb-3
+                label.form-label Select Asset to Scrap #[span.text-danger *]
+                select.form-select(name="assetId", required=true)
+                  option(value="" disabled=true selected=true) -- Select Asset --
+                  each asset in assets
+                    option(value=asset.id)
+                      | #{asset.assetCode} - #{asset.make} #{asset.model} (Status: #{asset.status})
+                .invalid-feedback Please select the asset to scrap.
+
+              .mb-3
+                label.form-label Scrap Reason / Notes #[span.text-danger *]
+                textarea.form-control(name="notes", rows="3", required=true, placeholder="Explain why the asset is being scrapped (e.g. Broken motherboard, obsolete spec, damaged past repair)...")
+                .invalid-feedback Please enter the reason for scrapping the asset.
+
+              .d-flex.justify-content-between.mt-4
+                a.btn.btn-secondary(href="/assets") Cancel
+                button.btn.btn-danger(type="submit")
+                  i.fa-solid.fa-trash-can.me-1
+                  | Scrap Asset Permanent
+
+block scripts
+  script.
+    (function () {
+      'use strict'
+      var forms = document.querySelectorAll('.needs-validation')
+      Array.prototype.slice.call(forms)
+        .forEach(function (form) {
+          form.addEventListener('submit', function (event) {
+            if (!form.checkValidity()) {
+              event.preventDefault()
+              event.stopPropagation()
+            }
+            form.classList.add('was-validated')
+          }, false)
+        })
+    })()

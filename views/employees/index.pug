@@ -1,0 +1,85 @@
+extends ../layout
+
+block content
+  .card.mb-4
+    .card-header.d-flex.justify-content-between.align-items-center
+      h4.mb-0 Employee List
+      a.btn.btn-sm.btn-primary(href="/employees/create")
+        i.fa-solid.fa-user-plus.me-1
+        | Add Employee
+    .card-body
+      form(method="GET", action="/employees", class="row g-2 mb-4")
+        .col-md-4
+          .input-group
+            span.input-group-text
+              i.fa-solid.fa-magnifying-glass
+            input.form-control(
+              type="text"
+              name="search"
+              placeholder="Search Employee..."
+              value=search
+            )
+        .col-md-3
+          .input-group
+            span.input-group-text Status
+            select.form-select(name="status")
+              option(value="" selected=(status === "")) All
+              option(value="ACTIVE" selected=(status === "ACTIVE")) Active
+              option(value="INACTIVE" selected=(status === "INACTIVE")) Inactive
+        .col-md-2
+          button.btn.btn-primary.w-100(type="submit") Search
+        .col-md-2
+          a.btn.btn-secondary.w-100(href="/employees") Reset
+
+      .table-responsive
+        table#employeesTable.table.table-striped.table-hover.align-middle
+          thead
+            tr
+              th ID
+              th Employee Code
+              th Name
+              th Email
+              th Department
+              th Branch
+              th Status
+              th.text-center Actions
+
+          tbody
+            each emp in employees
+              tr
+                td= emp.id
+                td.fw-semibold= emp.employeeCode
+                td= emp.name
+                td= emp.email
+                td= emp.department
+                td= emp.branch
+                td
+                  if emp.status === 'ACTIVE'
+                    span.badge.bg-success Active
+                  else
+                    span.badge.bg-secondary Inactive
+                td.text-center.text-nowrap
+                  a.btn.btn-sm.btn-outline-primary.me-2(href=`/employees/edit/${emp.id}`, title="Edit")
+                    i.fa-solid.fa-pen-to-square.me-1
+                    | Edit
+                  form(method="POST", action=`/employees/status/${emp.id}`, style="display:inline")
+                    if emp.status === 'ACTIVE'
+                      button.btn.btn-sm.btn-outline-warning(type="submit", title="Deactivate")
+                        i.fa-solid.fa-user-slash.me-1
+                        | Deactivate
+                    else
+                      button.btn.btn-sm.btn-outline-success(type="submit", title="Activate")
+                        i.fa-solid.fa-user-check.me-1
+                        | Activate
+
+block scripts
+  script.
+    $(document).ready(function() {
+      $('#employeesTable').DataTable({
+        searching: false, // Use server-side search as requested
+        pageLength: 10,
+        lengthChange: false,
+        ordering: true,
+        order: [[0, 'asc']]
+      });
+    });

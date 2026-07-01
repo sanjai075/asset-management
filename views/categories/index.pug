@@ -1,0 +1,57 @@
+extends ../layout
+
+block content
+  .card.mb-4
+    .card-header.d-flex.justify-content-between.align-items-center
+      h4.mb-0 Asset Categories
+      a.btn.btn-sm.btn-primary(href="/categories/create")
+        i.fa-solid.fa-plus.me-1
+        | Add Category
+    .card-body
+      form(method="GET", action="/categories", class="row g-2 mb-4")
+        .col-md-6
+          .input-group
+            span.input-group-text
+              i.fa-solid.fa-magnifying-glass
+            input.form-control(
+              type="text"
+              name="search"
+              placeholder="Search by name or description..."
+              value=search
+            )
+        .col-md-2
+          button.btn.btn-primary.w-100(type="submit") Search
+        .col-md-2
+          a.btn.btn-secondary.w-100(href="/categories") Reset
+
+      .table-responsive
+        table#categoriesTable.table.table-striped.table-hover.align-middle
+          thead
+            tr
+              th ID
+              th Category Name
+              th Description
+              th.text-center Actions
+
+          tbody
+            each cat in categories
+              tr
+                td= cat.id
+                td.fw-semibold= cat.name
+                td= cat.description || "N/A"
+                td.text-center
+                  a.btn.btn-sm.btn-outline-primary(href=`/categories/edit/${cat.id}`)
+                    i.fa-solid.fa-pen-to-square.me-1
+                    | Edit
+
+block scripts
+  script.
+    $(document).ready(function() {
+      $('#categoriesTable').DataTable({
+        searching: false,
+        pageLength: 10,
+        lengthChange: false,
+        ordering: true,
+        order: [[0, 'asc']]
+      });
+    });

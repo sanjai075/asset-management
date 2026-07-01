@@ -1,0 +1,110 @@
+extends ../layout
+
+block content
+  .row.mb-4
+    .col-12.d-flex.justify-content-between.align-items-center
+      h2 Asset Lifecycle History
+      a.btn.btn-outline-secondary(href="/assets")
+        i.fa-solid.fa-arrow-left.me-1
+        | Back to Assets
+
+  .row.g-4
+    //- Asset Summary Card
+    .col-md-4
+      .card.mb-4
+        .card-header.bg-transparent
+          h5.mb-0 Asset Details
+        .card-body
+          ul.list-group.list-group-flush
+            li.list-group-item.px-0.d-flex.justify-content-between
+              strong Asset Code:
+              span.fw-semibold= asset.assetCode
+            li.list-group-item.px-0.d-flex.justify-content-between
+              strong Serial Number:
+              span= asset.serialNumber
+            li.list-group-item.px-0.d-flex.justify-content-between
+              strong Category:
+              span= asset.category ? asset.category.name : "N/A"
+            li.list-group-item.px-0.d-flex.justify-content-between
+              strong Make:
+              span= asset.make
+            li.list-group-item.px-0.d-flex.justify-content-between
+              strong Model:
+              span= asset.model
+            li.list-group-item.px-0.d-flex.justify-content-between
+              strong Purchase Date:
+              span= asset.purchaseDate
+            li.list-group-item.px-0.d-flex.justify-content-between
+              strong Purchase Value:
+              span= `₹${parseFloat(asset.value).toFixed(2)}`
+            li.list-group-item.px-0.d-flex.justify-content-between
+              strong Location (Branch):
+              span= asset.branch
+            li.list-group-item.px-0.d-flex.justify-content-between.align-items-center
+              strong Current Status:
+              if asset.status === 'AVAILABLE'
+                span.badge.bg-success Available
+              else if asset.status === 'ISSUED'
+                span.badge.bg-info.text-dark Issued
+              else if asset.status === 'UNDER_REPAIR'
+                span.badge.bg-warning.text-dark Under Repair
+              else if asset.status === 'SCRAPPED'
+                span.badge.bg-danger Scrapped
+
+    //- Chronological Timeline
+    .col-md-8
+      .card
+        .card-header.bg-transparent
+          h5.mb-0 Chronological Lifecycle log
+        .card-body
+          .timeline
+            ul.list-group.list-group-flush
+              //- Purchase is the base/first event
+              li.list-group-item.py-3.border-start.border-3.border-primary.ps-4.position-relative
+                div.d-flex.justify-content-between.align-items-center.mb-1
+                  h6.fw-bold.text-primary.mb-0
+                    i.fa-solid.fa-cart-shopping.me-2
+                    | Asset Initial Purchase
+                  small.text-muted= asset.purchaseDate
+                p.mb-1.text-muted
+                  | Asset purchased/entered in system at branch 
+                  strong= asset.branch 
+                  |  with value of 
+                  strong= `₹${parseFloat(asset.value).toFixed(2)}`
+                  | .
+
+              //- Render subsequent transactions in chronological order
+              each tx in transactions
+                - let borderClass = "border-info"
+                - let textClass = "text-info"
+                - let icon = "fa-hand-holding-hand"
+                - if (tx.transactionType === "RETURN")
+                  - borderClass = "border-success"
+                  - textClass = "text-success"
+                  - icon = "fa-rotate-left"
+                - else if (tx.transactionType === "SCRAP")
+                  - borderClass = "border-danger"
+                  - textClass = "text-danger"
+                  - icon = "fa-trash-can"
+
+                li.list-group-item.py-3.border-start.border-3.ps-4(class=borderClass)
+                  div.d-flex.justify-content-between.align-items-center.mb-1
+                    h6.fw-bold.mb-0(class=textClass)
+                      i.fa-solid.me-2(class=icon)
+                      if tx.transactionType === "ISSUE"
+                        | Issued to Employee
+                      else if tx.transactionType === "RETURN"
+                        | Returned (Reason: #{tx.reason})
+                      else if tx.transactionType === "SCRAP"
+                        | Scrapped (Decommissioned)
+                    //- Format Date to a clean string
+                    small.text-muted= new Date(tx.transactionDate).toLocaleString()
+                  
+                  p.mb-1.text-muted
+                    if tx.employee
+                      | Employee involved: 
+                      strong #{tx.employee.name} (#{tx.employee.employeeCode})
+                    if tx.notes
+                      div.mt-1.p-2.bg-light.rounded.small.text-dark
+                        strong Note: 
+                        | #{tx.notes}

@@ -1,0 +1,59 @@
+extends ../layout
+
+block content
+  .row.justify-content-center
+    .col-md-8
+      .card
+        .card-header
+          h4.mb-0 Edit Employee
+        .card-body
+          form.needs-validation(method="POST", action=`/employees/edit/${employee.id}`, novalidate=true)
+            .mb-3
+              label.form-label Employee Code #[span.text-danger *]
+              input.form-control(type="text", name="employeeCode", value=employee.employeeCode, required=true)
+              .invalid-feedback Please provide a valid, unique Employee Code.
+
+            .mb-3
+              label.form-label Name #[span.text-danger *]
+              input.form-control(type="text", name="name", value=employee.name, required=true)
+              .invalid-feedback Please enter the employee's name.
+
+            .mb-3
+              label.form-label Email #[span.text-danger *]
+              input.form-control(type="email", name="email", value=employee.email, required=true, pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}")
+              .invalid-feedback Please enter a valid, unique email address.
+
+            .mb-3
+              label.form-label Phone
+              input.form-control(type="text", name="phone", value=employee.phone)
+
+            .mb-3
+              label.form-label Department
+              input.form-control(type="text", name="department", value=employee.department)
+
+            .mb-3
+              label.form-label Branch
+              input.form-control(type="text", name="branch", value=employee.branch)
+
+            .d-flex.justify-content-between.mt-4
+              a.btn.btn-secondary(href="/employees") Cancel
+              button.btn.btn-primary(type="submit")
+                i.fa-solid.fa-floppy-disk.me-1
+                | Update Employee
+
+block scripts
+  script.
+    (function () {
+      'use strict'
+      var forms = document.querySelectorAll('.needs-validation')
+      Array.prototype.slice.call(forms)
+        .forEach(function (form) {
+          form.addEventListener('submit', function (event) {
+            if (!form.checkValidity()) {
+              event.preventDefault()
+              event.stopPropagation()
+            }
+            form.classList.add('was-validated')
+          }, false)
+        })
+    })()

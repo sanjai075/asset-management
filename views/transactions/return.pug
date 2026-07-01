@@ -1,0 +1,65 @@
+extends ../layout
+
+block content
+  .row.justify-content-center
+    .col-md-8
+      .card
+        .card-header
+          h4.mb-0
+            i.fa-solid.fa-rotate-left.me-2.text-success
+            | Return Issued Asset
+        .card-body
+          if issuedAssets.length === 0
+            .alert.alert-info.mb-0
+              i.fa-solid.fa-circle-info.me-2
+              | There are currently no issued assets to return.
+          else
+            form.needs-validation(method="POST", action="/transactions/return", novalidate=true)
+              .mb-3
+                label.form-label Select Issued Asset #[span.text-danger *]
+                select.form-select(name="assetId", required=true)
+                  option(value="" disabled=true selected=true) -- Select Issued Asset --
+                  each record in issuedAssets
+                    option(value=record.asset.id)
+                      | #{record.asset.assetCode} - #{record.asset.make} #{record.asset.model} 
+                      if record.employee
+                        | (Currently with: #{record.employee.name})
+                      else
+                        | (Unknown Assignee)
+                .invalid-feedback Please select the issued asset being returned.
+
+              .mb-3
+                label.form-label Return Reason #[span.text-danger *]
+                select.form-select(name="reason", required=true)
+                  option(value="" disabled=true selected=true) -- Select Reason --
+                  option(value="Upgrade") Upgrade
+                  option(value="Repair") Repair
+                  option(value="Resignation") Resignation
+                .invalid-feedback Please select the reason for returning the asset.
+
+              .mb-3
+                label.form-label Notes / Remarks
+                textarea.form-control(name="notes", rows="3", placeholder="Describe the condition or additional context...")
+
+              .d-flex.justify-content-between.mt-4
+                a.btn.btn-secondary(href="/assets") Cancel
+                button.btn.btn-success(type="submit")
+                  i.fa-solid.fa-check.me-1
+                  | Process Return
+
+block scripts
+  script.
+    (function () {
+      'use strict'
+      var forms = document.querySelectorAll('.needs-validation')
+      Array.prototype.slice.call(forms)
+        .forEach(function (form) {
+          form.addEventListener('submit', function (event) {
+            if (!form.checkValidity()) {
+              event.preventDefault()
+              event.stopPropagation()
+            }
+            form.classList.add('was-validated')
+          }, false)
+        })
+    })()

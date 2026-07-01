@@ -1,0 +1,76 @@
+extends layout
+
+block content
+  .row.mb-4
+    .col-12.text-center.py-4
+      h1.display-5.fw-bold.text-dark Welcome to Asset Manager
+      p.lead.text-muted Manage your employees, asset categories, physical assets, stock distributions, and transaction lifecycles in one place.
+
+  .row.g-4
+    .col-md-6.col-lg-3
+      .card.h-100
+        .card-body.d-flex.flex-column
+          div.mb-3
+            span.badge.bg-primary-subtle.text-primary.p-2.fs-5
+              i.fa-solid.fa-users
+          h5.card-title Employee Master
+          p.card-text.text-muted.small Add, edit, view, and search employees. Toggle status between Active and Inactive.
+          a.btn.btn-outline-primary.mt-auto.w-100(href="/employees")
+            | View Employees
+            i.fa-solid.fa-arrow-right.ms-2
+
+    .col-md-6.col-lg-3
+      .card.h-100
+        .card-body.d-flex.flex-column
+          div.mb-3
+            span.badge.bg-success-subtle.text-success.p-2.fs-5
+              i.fa-solid.fa-tags
+          h5.card-title Asset Categories
+          p.card-text.text-muted.small Manage categories like Laptops, Mobile Phones, Printers, and other tools.
+          a.btn.btn-outline-success.mt-auto.w-100(href="/categories")
+            | View Categories
+            i.fa-solid.fa-arrow-right.ms-2
+
+    .col-md-6.col-lg-3
+      .card.h-100
+        .card-body.d-flex.flex-column
+          div.mb-3
+            span.badge.bg-info-subtle.text-info.p-2.fs-5
+              i.fa-solid.fa-laptop
+          h5.card-title Asset Master
+          p.card-text.text-muted.small Track specific assets using unique asset codes, serial numbers, and make/model descriptions.
+          a.btn.btn-outline-info.mt-auto.w-100(href="/assets")
+            | View Assets
+            i.fa-solid.fa-arrow-right.ms-2
+
+    .col-md-6.col-lg-3
+      .card.h-100
+        .card-body.d-flex.flex-column
+          div.mb-3
+            span.badge.bg-warning-subtle.text-warning.p-2.fs-5
+              i.fa-solid.fa-chart-pie
+          h5.card-title Stock View
+          p.card-text.text-muted.small Monitor available inventory, branch-wise totals, and the aggregate value of all available assets.
+          a.btn.btn-outline-warning.mt-auto.w-100(href="/stock")
+            | View Stock
+            i.fa-solid.fa-arrow-right.ms-2
+
+  .row.mt-5
+    .col-12
+      .card.bg-light
+        .card-header.bg-transparent.border-0.pt-4.ps-4
+          h4.fw-bold Quick Actions
+        .card-body.p-4
+          .row.g-3
+            .col-sm-4
+              a.btn.btn-primary.w-100.py-3.fs-5(href="/transactions/issue")
+                i.fa-solid.fa-hand-holding-hand.me-2
+                | Issue Asset
+            .col-sm-4
+              a.btn.btn-success.w-100.py-3.fs-5(href="/transactions/return")
+                i.fa-solid.fa-rotate-left.me-2
+                | Return Asset
+            .col-sm-4
+              a.btn.btn-danger.w-100.py-3.fs-5(href="/transactions/scrap")
+                i.fa-solid.fa-trash-can.me-2
+                | Scrap Asset

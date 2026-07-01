@@ -1,0 +1,85 @@
+extends ../layout
+
+block content
+  .card.mb-4
+    .card-header.d-flex.justify-content-between.align-items-center
+      h4.mb-0 Assets
+      a.btn.btn-sm.btn-primary(href="/assets/create")
+        i.fa-solid.fa-plus.me-1
+        | Add Asset
+    .card-body
+      form(method="GET", action="/assets", class="row g-2 mb-4")
+        .col-md-4
+          .input-group
+            span.input-group-text
+              i.fa-solid.fa-magnifying-glass
+            input.form-control(
+              type="text"
+              name="search"
+              placeholder="Search by Make or Model..."
+              value=search
+            )
+        .col-md-4
+          .input-group
+            span.input-group-text Category
+            select.form-select(name="categoryId")
+              option(value="" selected=(categoryId === "")) All Categories
+              each cat in categories
+                option(value=cat.id selected=(categoryId == cat.id))= cat.name
+        .col-md-2
+          button.btn.btn-primary.w-100(type="submit") Filter
+        .col-md-2
+          a.btn.btn-secondary.w-100(href="/assets") Reset
+
+      .table-responsive
+        table#assetsTable.table.table-striped.table-hover.align-middle
+          thead
+            tr
+              th Asset Code
+              th Serial Number
+              th Category
+              th Make
+              th Model
+              th Branch
+              th Value
+              th Status
+              th.text-center Actions
+
+          tbody
+            each asset in assets
+              tr
+                td.fw-semibold= asset.assetCode
+                td= asset.serialNumber
+                td= asset.category ? asset.category.name : "Uncategorized"
+                td= asset.make
+                td= asset.model
+                td= asset.branch
+                td= `₹${parseFloat(asset.value).toFixed(2)}`
+                td
+                  if asset.status === 'AVAILABLE'
+                    span.badge.bg-success Available
+                  else if asset.status === 'ISSUED'
+                    span.badge.bg-info.text-dark Issued
+                  else if asset.status === 'UNDER_REPAIR'
+                    span.badge.bg-warning.text-dark Under Repair
+                  else if asset.status === 'SCRAPPED'
+                    span.badge.bg-danger Scrapped
+                td.text-center.text-nowrap
+                  a.btn.btn-sm.btn-outline-primary.me-2(href=`/assets/edit/${asset.id}`, title="Edit")
+                    i.fa-solid.fa-pen-to-square.me-1
+                    | Edit
+                  a.btn.btn-sm.btn-outline-dark(href=`/assets/history/${asset.id}`, title="History")
+                    i.fa-solid.fa-clock-rotate-left.me-1
+                    | History
+
+block scripts
+  script.
+    $(document).ready(function() {
+      $('#assetsTable').DataTable({
+        searching: false,
+        pageLength: 10,
+        lengthChange: false,
+        ordering: true,
+        order: [[0, 'asc']]
+      });
+    });

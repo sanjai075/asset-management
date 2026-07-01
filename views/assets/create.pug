@@ -1,0 +1,75 @@
+extends ../layout
+
+block content
+  .row.justify-content-center
+    .col-md-8
+      .card
+        .card-header
+          h4.mb-0 Add Asset
+        .card-body
+          form.needs-validation(method="POST", action="/assets/create", novalidate=true)
+            .mb-3
+              label.form-label Category #[span.text-danger *]
+              select.form-select(name="categoryId", required=true)
+                option(value="" disabled=true selected=true) -- Select Category --
+                each cat in categories
+                  option(value=cat.id)= cat.name
+              .invalid-feedback Please select an asset category.
+
+            .row
+              .col-md-6.mb-3
+                label.form-label Asset Code (Unique) #[span.text-danger *]
+                input.form-control(type="text", name="assetCode", required=true, placeholder="e.g. LPT-2026-001")
+                .invalid-feedback Please enter a unique Asset Code.
+              .col-md-6.mb-3
+                label.form-label Serial Number (Unique) #[span.text-danger *]
+                input.form-control(type="text", name="serialNumber", required=true, placeholder="e.g. SN123456789")
+                .invalid-feedback Please enter a unique Serial Number.
+
+            .row
+              .col-md-6.mb-3
+                label.form-label Make #[span.text-danger *]
+                input.form-control(type="text", name="make", required=true, placeholder="e.g. Dell, Apple, HP")
+                .invalid-feedback Please enter the manufacturer/make.
+              .col-md-6.mb-3
+                label.form-label Model #[span.text-danger *]
+                input.form-control(type="text", name="model", required=true, placeholder="e.g. Latitude 5420, MacBook Pro")
+                .invalid-feedback Please enter the model name.
+
+            .row
+              .col-md-6.mb-3
+                label.form-label Purchase Date #[span.text-danger *]
+                input.form-control(type="date", name="purchaseDate", required=true)
+                .invalid-feedback Please select a valid purchase date.
+              .col-md-6.mb-3
+                label.form-label Purchase Value (₹) #[span.text-danger *]
+                input.form-control(type="number", step="0.01", name="value", required=true, placeholder="e.g. 120000.00")
+                .invalid-feedback Please enter a valid numeric purchase value.
+
+            .mb-3
+              label.form-label Current Location / Branch #[span.text-danger *]
+              input.form-control(type="text", name="branch", required=true, placeholder="e.g. Coimbatore, Chennai, Madurai")
+              .invalid-feedback Please specify the current location or branch.
+
+            .d-flex.justify-content-between.mt-4
+              a.btn.btn-secondary(href="/assets") Cancel
+              button.btn.btn-primary(type="submit")
+                i.fa-solid.fa-floppy-disk.me-1
+                | Save Asset
+
+block scripts
+  script.
+    (function () {
+      'use strict'
+      var forms = document.querySelectorAll('.needs-validation')
+      Array.prototype.slice.call(forms)
+        .forEach(function (form) {
+          form.addEventListener('submit', function (event) {
+            if (!form.checkValidity()) {
+              event.preventDefault()
+              event.stopPropagation()
+            }
+            form.classList.add('was-validated')
+          }, false)
+        })
+    })()

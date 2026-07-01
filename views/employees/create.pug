@@ -1,0 +1,59 @@
+extends ../layout
+
+block content
+  .row.justify-content-center
+    .col-md-8
+      .card
+        .card-header
+          h4.mb-0 Add Employee
+        .card-body
+          form.needs-validation(method="POST", action="/employees/create", novalidate=true)
+            .mb-3
+              label.form-label Employee Code #[span.text-danger *]
+              input.form-control(type="text", name="employeeCode", required=true, placeholder="e.g. EMP001")
+              .invalid-feedback Please provide a valid, unique Employee Code.
+
+            .mb-3
+              label.form-label Name #[span.text-danger *]
+              input.form-control(type="text", name="name", required=true, placeholder="e.g. John Doe")
+              .invalid-feedback Please enter the employee's name.
+
+            .mb-3
+              label.form-label Email #[span.text-danger *]
+              input.form-control(type="email", name="email", required=true, pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}", placeholder="e.g. john@example.com")
+              .invalid-feedback Please enter a valid, unique email address.
+
+            .mb-3
+              label.form-label Phone
+              input.form-control(type="text", name="phone", placeholder="e.g. +91 98765 43210")
+
+            .mb-3
+              label.form-label Department
+              input.form-control(type="text", name="department", placeholder="e.g. Engineering")
+
+            .mb-3
+              label.form-label Branch
+              input.form-control(type="text", name="branch", placeholder="e.g. Coimbatore, Chennai, Madurai")
+
+            .d-flex.justify-content-between.mt-4
+              a.btn.btn-secondary(href="/employees") Cancel
+              button.btn.btn-primary(type="submit")
+                i.fa-solid.fa-floppy-disk.me-1
+                | Save Employee
+
+block scripts
+  script.
+    (function () {
+      'use strict'
+      var forms = document.querySelectorAll('.needs-validation')
+      Array.prototype.slice.call(forms)
+        .forEach(function (form) {
+          form.addEventListener('submit', function (event) {
+            if (!form.checkValidity()) {
+              event.preventDefault()
+              event.stopPropagation()
+            }
+            form.classList.add('was-validated')
+          }, false)
+        })
+    })()

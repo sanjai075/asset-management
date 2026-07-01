@@ -1,0 +1,41 @@
+extends ../layout
+
+block content
+  .row.justify-content-center
+    .col-md-8
+      .card
+        .card-header
+          h4.mb-0 Add Asset Category
+        .card-body
+          form.needs-validation(method="POST", action="/categories/create", novalidate=true)
+            .mb-3
+              label.form-label Category Name #[span.text-danger *]
+              input.form-control(type="text", name="name", required=true, placeholder="e.g. Laptop, Mobile Phone, Printer")
+              .invalid-feedback Please enter a category name.
+
+            .mb-3
+              label.form-label Description
+              textarea.form-control(name="description", rows="4", placeholder="Describe the type of assets in this category...")
+
+            .d-flex.justify-content-between.mt-4
+              a.btn.btn-secondary(href="/categories") Cancel
+              button.btn.btn-primary(type="submit")
+                i.fa-solid.fa-floppy-disk.me-1
+                | Save Category
+
+block scripts
+  script.
+    (function () {
+      'use strict'
+      var forms = document.querySelectorAll('.needs-validation')
+      Array.prototype.slice.call(forms)
+        .forEach(function (form) {
+          form.addEventListener('submit', function (event) {
+            if (!form.checkValidity()) {
+              event.preventDefault()
+              event.stopPropagation()
+            }
+            form.classList.add('was-validated')
+          }, false)
+        })
+    })()
